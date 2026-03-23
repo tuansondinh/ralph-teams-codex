@@ -53,7 +53,7 @@ Note any failures.
 
 ### 4. Second Opinion (if available)
 
-Check whether an external coding CLI is available, such as `mcp__Multi_CLI__Ask_Claude`, `mcp__Multi_CLI__Ask_Gemini`, or `mcp__Multi_CLI__Ask_OpenCode`.
+Check if Codex CLI or any MCP coding assistant is available for a second opinion.
 
 If yes: pass a summary of your findings plus the diff stats to that tool with the prompt:
 > *"I reviewed this implementation and found the following. Do you agree? Anything I missed? Be concise."*

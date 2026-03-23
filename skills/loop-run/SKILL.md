@@ -17,7 +17,7 @@ cat ralph-teams/PLAN.md
 ```
 
 If not found, tell user:
-> `ralph-teams/PLAN.md` not found. Use `loop-plan` to create a plan first.
+> `ralph-teams/PLAN.md` not found. Provide an existing phased plan first before using `loop-run`.
 
 Read the plan and identify:
 - All phases and their current `Status:` (pending, in-progress, partial, done)

@@ -1,6 +1,6 @@
 {
   "name": "ralph-teams-codex",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Codex skill pack for planning and building features with sequential builder subagents and verification workflows.",
   "license": "MIT",
   "bin": {

@@ -10,7 +10,6 @@ const defaultSkillNames = [
   "teams-plan",
   "teams-run",
   "teams-verify",
-  "loop-plan",
   "loop-run"
 ];
 

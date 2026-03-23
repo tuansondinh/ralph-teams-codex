@@ -16,10 +16,12 @@ Ask: **"What do you want to build?"**
 
 Discuss with the user. Identify the target platform: **web** or **mobile** (this determines whether the builder uses Playwright or Maestro for verification).
 
-**Task sizing:** Each task should be a meaningful, self-contained unit of work — something a developer could complete in one focused session.
+**Task sizing:** Each task runs in its own builder agent with a 200k token context window — it must fit entirely within one session. If a task is too large for one session, split it into multiple tasks.
 - **Too small:** "Add a button", "rename a variable" — merge into a larger task.
-- **Too big:** "Build the entire backend", "implement all API routes" — split them.
+- **Too big:** anything that requires reading and writing more code than fits in one session — split it.
 - **Right size:** "Implement user authentication (signup, login, JWT middleware)", "Build the product listing page with filtering and pagination".
+
+> **Rule of thumb:** when in doubt, split. A task that's too small costs one extra agent spawn. A task that's too big will fail mid-way.
 
 **Prepare the build directory:**
 
@@ -210,3 +212,35 @@ Final summary format:
 
 Then suggest:
 > **Build done. Run `teams-verify` to walk through manual E2E verification.**
+
+---
+
+## Step 7: Optional - Update Docs
+
+Ask the user:
+
+> **"Would you like to update your documentation to reflect the changes made? (README, changelog, API docs, etc.)"**
+
+If **yes**, spawn a lightweight documentation agent:
+
+```
+spawn_agent(
+  agent_type: "worker",
+  model: "gpt-5.4-mini",
+  message: "You are a documentation writer. Update the project documentation to reflect recent changes.
+
+    Changes made (git diff since build started):
+    [run: git diff [BASE_SHA]..HEAD --stat and git diff [BASE_SHA]..HEAD]
+
+    Tasks completed:
+    [paste task list from ralph-teams/PLAN.md]
+
+    Instructions:
+    - Find existing documentation files (README.md, CHANGELOG.md, docs/, etc.)
+    - Update them to reflect the new functionality
+    - Keep changes minimal and accurate - only document what was actually built
+    - Commit with message: 'docs: update documentation for [feature name]'"
+)
+```
+
+If **no**, skip.
