@@ -17,7 +17,7 @@ Read `ralph-teams/PLAN.md`. If not found:
 
 Identify:
 - Plan ID (the `Plan ID:` field — e.g. `#2`)
-- All tasks and their status (`[x]` = done, `[!]` = failed, `[ ]` = incomplete)
+- All tasks, their status (`[x]` = done, `[!]` = failed, `[ ]` = incomplete), and their complexity annotation (`complexity: simple` or `complexity: complex`)
 - Platform (web or mobile)
 - Verification scenarios
 
@@ -44,12 +44,14 @@ git rev-parse HEAD
 ```
 Save this as `BASE_SHA`.
 
-For **each incomplete task** (`[ ]` or `[!]`) **in order**, use `spawn_agent`:
+For **each incomplete task** (`[ ]` or `[!]`) **in order**, use `spawn_agent`. Pick the model from the task's complexity annotation:
+- `complexity: simple` → `model: "gpt-5.4-mini"`
+- `complexity: complex` → `model: "gpt-5.4"`
 
 ```
 spawn_agent(
   agent_type: "worker",
-  model: "gpt-5.4-mini",
+  model: "[gpt-5.4-mini | gpt-5.4 based on task complexity]",
   message: "You are implementing Task [N] of [M]: [task description].
 
     Platform: [web|mobile]

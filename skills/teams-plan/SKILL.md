@@ -23,6 +23,10 @@ Discuss with the user. Identify the target platform: **web** or **mobile** (this
 
 > **Rule of thumb:** when in doubt, split. A task that's too small costs one extra agent spawn. A task that's too big will fail mid-way.
 
+**Task complexity:** For each task, assign a complexity level — this determines which model the builder uses:
+- `simple` → `gpt-5.4-mini`: UI changes, simple CRUD, config updates, adding fields, renaming, straightforward bug fixes
+- `complex` → `gpt-5.4`: auth/security, data migrations, database schema design, architecture decisions, algorithms, payments, cross-cutting concerns, anything requiring deep reasoning
+
 **Prepare the build directory:**
 
 ```bash
@@ -46,9 +50,9 @@ Platform: web | mobile
 Status: draft
 
 ## Tasks
-1. [ ] Task 1: [Description]
-2. [ ] Task 2: [Description]
-3. [ ] Task 3: [Description]
+1. [ ] Task 1: [Description] — complexity: simple
+2. [ ] Task 2: [Description] — complexity: complex
+3. [ ] Task 3: [Description] — complexity: simple
 
 ## Acceptance Criteria
 - [Criterion 1]
@@ -105,12 +109,14 @@ When approved:
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    ```
 
-For **each task in order**, use `spawn_agent` to start a builder subagent:
+For **each task in order**, use `spawn_agent` to start a builder subagent. Pick the model from the task's complexity annotation:
+- `complexity: simple` → `model: "gpt-5.4-mini"`
+- `complexity: complex` → `model: "gpt-5.4"`
 
 ```
 spawn_agent(
   agent_type: "worker",
-  model: "gpt-5.4-mini",
+  model: "[gpt-5.4-mini | gpt-5.4 based on task complexity]",
   message: "You are implementing Task [N] of [M]: [task description].
 
     Platform: [web|mobile]
@@ -129,9 +135,9 @@ Wait for the subagent with `wait_agent` before starting the next. After each tas
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   RALPH-TEAMS  [N of M tasks complete]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ✓  Task 1: Project Setup          [done]
-  ►  Task 2: Auth System            [building...]
-  ○  Task 3: API Routes             [pending]
+  ✓  Task 1: Project Setup          [done]        (mini)
+  ►  Task 2: Auth System            [building...]  (5.4)
+  ○  Task 3: API Routes             [pending]      (mini)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
