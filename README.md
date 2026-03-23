@@ -1,6 +1,6 @@
 # ralph-teams-codex
 
-A Codex skill pack for planning and building features with sequential builder subagents, automated E2E verification, a review pass, and an optional fix pass.
+A Codex skill pack for planning and building features with sequential builder subagents (gpt-5.4-mini or gpt-5.4 based on task complexity), automated E2E verification, a review pass, and integrated debug and documentation skills.
 
 ## Does Codex Support Plugins?
 
@@ -85,9 +85,9 @@ flowchart TD
 
     subgraph Build[" "]
         direction TB
-        B1["Builder Agent - Task 1"]:::agent
-        B2["Builder Agent - Task 2"]:::agent
-        BN["Builder Agent - Task N"]:::agent
+        B1["mini/5.4 Builder - Task 1"]:::agent
+        B2["mini/5.4 Builder - Task 2"]:::agent
+        BN["mini/5.4 Builder - Task N"]:::agent
         B1 --> B2 --> BN
     end
 
@@ -97,7 +97,7 @@ flowchart TD
     CX2["Codex second opinion on review (optional)"]:::optional
     REV["ralph-teams/REVIEW.md"]:::doc
     BF["Builder Agent - Fixes"]:::agent
-    DOCS["Docs update agent (optional)"]:::optional
+    DOCS["Scribe Agent - Updates docs (optional)"]:::optional
 
     Build --> R
     R --> CX2
@@ -106,7 +106,9 @@ flowchart TD
     BF --> DOCS
 
     P3["teams-verify - Walk through scenarios manually"]:::cmd
+    DBG["teams-debug - Fix bugs against the plan"]:::optional
     DOCS --> P3
+    P3 --> DBG
 ```
 
 Each task runs in its own isolated subagent with a clean 200k token context window. Results are committed after each task so you can always resume with `teams-run`.
@@ -118,22 +120,24 @@ Each task runs in its own isolated subagent with a clean 200k token context wind
 | `teams-plan` | Discuss, plan, optionally review the plan, execute tasks sequentially, review, then apply fixes if needed |
 | `teams-run` | Resume an existing plan from where it left off |
 | `teams-verify` | Walk through manual E2E verification scenario by scenario |
+| `teams-debug` | Fix a bug in relation to the active plan — usable anytime |
+| `teams-document` | Update existing docs (README, ARCHITECTURE.md, etc.) for the latest plan |
 | `loop-run` | Resume phased execution |
 
 ## Output
 
 ```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  TEAMS  2 of 4 tasks complete
+  RALPH-TEAMS  Plan #3 — 2 of 4 tasks complete
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ✓  Task 1: Project Setup          [done]
-  ✓  Task 2: Auth System            [done]
-  ►  Task 3: API Routes             [building...]
-  ○  Task 4: Frontend               [pending]
+  ✓  Task 1: Project Setup          [done]        (mini)
+  ✓  Task 2: Auth System            [done]        (5.4)
+  ►  Task 3: API Routes             [building...]  (5.4)
+  ○  Task 4: Frontend               [pending]      (mini)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-Status symbols: `✓` done, `►` building, `✗` failed, `○` pending.
+Status symbols: `✓` done · `►` building · `✗` failed · `○` pending · `(mini)` simple task · `(5.4)` standard task
 
 ## Output Files
 
@@ -141,6 +145,6 @@ All build artifacts are written to `./ralph-teams/` in your project:
 
 | File | Contents |
 |------|----------|
-| `ralph-teams/PLAN.md` | Tasks, acceptance criteria, verification scenarios |
+| `ralph-teams/PLAN.md` | Plan ID, tasks with complexity, acceptance criteria, verification scenarios |
 | `ralph-teams/REVIEW.md` | Reviewer findings |
 | `ralph-teams/VERIFY.md` | Manual verification results |
