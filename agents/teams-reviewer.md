@@ -60,23 +60,19 @@ Only seek a second opinion if **at least one** of these is true:
 
 If neither applies, skip this step.
 
-If seeking a second opinion: use `spawn_agent` to ask Claude Opus:
+If seeking a second opinion, try the following in order — use the first one available:
 
-```
-spawn_agent(
-  agent_type: "default",
-  model: "claude-opus-4-5",
-  message: "I reviewed this implementation and found the following. Do you agree? Anything I missed? Be concise.
+1. **Claude CLI** — check if a `claude` CLI tool is accessible and run:
+   ```bash
+   echo "[findings summary + diff stats]" | claude --model claude-opus-4-5 "I reviewed this implementation and found the following. Do you agree? Anything I missed? Be concise."
+   ```
 
-    Findings:
-    [paste your current findings summary]
+2. **Multi-CLI MCP** — use `ToolSearch` to find `mcp__Multi-CLI__Ask-Claude`, `mcp__Multi-CLI__Ask-Gemini`, or `mcp__Multi-CLI__Ask-OpenCode`. Call the available tool with:
+   > *"I reviewed this implementation and found the following. Do you agree? Anything I missed? Be concise. [paste findings summary + diff stats]"*
 
-    Diff stats:
-    [paste git diff --stat output]"
-)
-```
+3. **Skip** — if neither is available, proceed without a second opinion.
 
-Incorporate any additional valid findings from the response.
+Incorporate any additional valid findings.
 
 ### 5. Write REVIEW.md
 
