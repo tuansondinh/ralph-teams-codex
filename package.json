@@ -1,0 +1,20 @@
+{
+  "name": "ralph-teams-codex",
+  "version": "0.1.0",
+  "description": "Codex skill pack for planning and building features with sequential builder subagents and verification workflows.",
+  "license": "MIT",
+  "bin": {
+    "ralph-teams-codex": "./bin/ralph-teams-codex.js"
+  },
+  "files": [
+    "bin",
+    "skills",
+    "agents",
+    "AGENTS.md",
+    "README.md",
+    "FLOW.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}
