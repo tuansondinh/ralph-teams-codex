@@ -74,9 +74,9 @@ Orchestrator (plan or run skill)
 ## Key Contracts
 
 ### Builder subagent
-1. Receives assignment from orchestrator (task details or review fixes)
+1. Receives assignment from orchestrator (task + subtasks, or review fixes)
 2. Reads `.build/PLAN.md` for context
-3. Implements the work
+3. Implements the work, completing all subtasks in order
 4. Verifies with Playwright/Maestro (or falls back to tests if unavailable)
 5. Commits with descriptive message
 6. Returns summary with commit SHA
@@ -109,9 +109,14 @@ Platform: web | mobile
 Status: draft | approved
 
 ## Tasks
-1. [ ] Task 1: [Description]
-2. [x] Task 2: [Description]  ← completed
-3. [!] Task 3: [Description]  ← failed
+1. [ ] Task 1: [Description] — complexity: simple
+   - [Subtask 1 description]
+   - [Subtask 2 description]
+2. [x] Task 2: [Description] — complexity: standard  ← completed
+   - [Subtask 1 description]
+3. [!] Task 3: [Description] — complexity: standard  ← failed
+   - [Subtask 1 description]
+   - [Subtask 2 description]
 
 ## Acceptance Criteria
 - [Criterion 1]
@@ -121,6 +126,8 @@ Tool: Playwright | Maestro
 Scenarios:
 - [Scenario: name — steps — expected result]
 ```
+
+Task status is tracked at the task level only (`[ ]` pending, `[x]` done, `[!]` failed). Subtasks are guidance for the builder — no individual status tracking.
 
 ---
 

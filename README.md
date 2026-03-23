@@ -1,6 +1,6 @@
 # ralph-teams-codex
 
-A Codex skill pack for planning and building features with sequential builder subagents (gpt-5.4-mini or gpt-5.4 based on task complexity), automated E2E verification, a review pass, and integrated debug and documentation skills.
+A Codex skill pack for planning and building features with sequential builder subagents (gpt-5.4-mini or gpt-5.4 based on task complexity). Each task is broken into subtasks the builder works through in one session — automated E2E verification, a review pass, and integrated debug and documentation skills.
 
 ## Does Codex Support Plugins?
 
@@ -111,7 +111,7 @@ flowchart TD
     P3 --> DBG
 ```
 
-Each task runs in its own isolated subagent with a clean 200k token context window. Results are committed after each task so you can always resume with `teams-run`.
+Each task runs in its own isolated subagent with a clean 200k token context window. Tasks are meaningful feature areas broken into subtasks — the builder completes all subtasks within one session. Results are committed after each task so you can always resume with `teams-run`.
 
 ## Skills
 

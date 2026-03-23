@@ -16,12 +16,12 @@ Ask: **"What do you want to build?"**
 
 Discuss with the user. Identify the target platform: **web** or **mobile** (this determines whether the builder uses Playwright or Maestro for verification).
 
-**Task sizing:** Each task runs in its own builder agent with a 200k token context window — it must fit entirely within one session. If a task is too large for one session, split it into multiple tasks.
-- **Too small:** "Add a button", "rename a variable" — merge into a larger task.
-- **Too big:** anything that requires reading and writing more code than fits in one session — split it.
-- **Right size:** "Implement user authentication (signup, login, JWT middleware)", "Build the product listing page with filtering and pagination".
+**Task sizing:** Each task runs in its own builder agent with a 200k token context window — everything in the task must fit within one session. Tasks should be meaningful chunks of work, not single lines. Use **subtasks** to break a task into concrete steps the builder will follow.
+- **Too small:** a task with only one trivial action — merge it into a related task or make it a subtask.
+- **Too big:** a task whose subtasks collectively require more code than fits in one session — split into multiple tasks.
+- **Right size:** "Implement user authentication" (with subtasks: signup endpoint, login endpoint, JWT middleware, tests), "Build product listing page" (with subtasks: list component, filter sidebar, pagination).
 
-> **Rule of thumb:** when in doubt, split. A task that's too small costs one extra agent spawn. A task that's too big will fail mid-way.
+> **Rule of thumb:** a task = one meaningful feature area. Subtasks = the concrete steps the builder takes to complete it. When in doubt, split at the task level.
 
 **Task complexity:** For each task, assign a complexity level — this determines which model the builder uses:
 - `simple` → `gpt-5.4-mini`: truly trivial tasks only — renaming, copy changes, config tweaks, adding a single field
@@ -52,8 +52,15 @@ Status: draft
 
 ## Tasks
 1. [ ] Task 1: [Description] — complexity: simple
+   - [Subtask 1 description]
+   - [Subtask 2 description]
 2. [ ] Task 2: [Description] — complexity: standard
+   - [Subtask 1 description]
+   - [Subtask 2 description]
+   - [Subtask 3 description]
 3. [ ] Task 3: [Description] — complexity: standard
+   - [Subtask 1 description]
+   - [Subtask 2 description]
 
 ## Acceptance Criteria
 - [Criterion 1]
@@ -120,12 +127,15 @@ spawn_agent(
   model: "[gpt-5.4-mini | gpt-5.4 based on task complexity]",
   message: "You are implementing Task [N] of [M]: [task description].
 
+    Subtasks to complete:
+    [list subtasks from the task]
+
     Platform: [web|mobile]
 
     Full plan:
     [paste .ralph-teams/PLAN-[N].md content]
 
-    Your task: implement Task [N] only. Verify it works using [Playwright|Maestro], then commit.
+    Your task: implement Task [N] only, completing all its subtasks. Verify it works using [Playwright|Maestro], then commit.
     If [Playwright|Maestro] tools are not available, run tests/lint instead and note that E2E verification was skipped."
 )
 ```

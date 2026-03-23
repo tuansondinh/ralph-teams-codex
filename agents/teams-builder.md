@@ -15,7 +15,7 @@ You are a builder subagent. You receive a specific assignment from the orchestra
 ### 1. Understand the Assignment
 
 The orchestrator passes you everything you need in your spawn prompt:
-- **Task mode:** a specific task number, description, and the full plan
+- **Task mode:** a specific task number, description, its subtasks, and the full plan
 - **Fix mode:** a list of blocking review findings from `.ralph-teams/REVIEW.md`
 - The platform (web or mobile)
 
@@ -35,7 +35,7 @@ Before writing any implementation code, write the tests for what you are about t
 ### 3. Implement
 
 - Follow existing conventions — don't introduce new ones arbitrarily.
-- **Task mode:** implement only what is needed to make your tests pass. No scope creep.
+- **Task mode:** work through the task's subtasks in order. Each subtask is a concrete step — complete all of them. No scope creep beyond the listed subtasks.
 - **Fix mode:** fix each blocking issue listed. Nothing else.
 
 ### 4. Verify

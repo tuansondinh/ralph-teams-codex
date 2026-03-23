@@ -52,7 +52,7 @@ Summarize your understanding back to the user:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Feature:   [feature name from PLAN.md]
   Bug:       [one-line summary]
-  Related:   [task(s) or scenario(s) from the plan]
+  Related:   [task(s)/subtask(s) or scenario(s) from the plan]
   Criteria:  [affected acceptance criteria, if any]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
