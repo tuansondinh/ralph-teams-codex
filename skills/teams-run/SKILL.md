@@ -16,6 +16,7 @@ Read `ralph-teams/PLAN.md`. If not found:
 > `ralph-teams/PLAN.md` not found. Use `teams-plan` to create a plan first.
 
 Identify:
+- Plan ID (the `Plan ID:` field — e.g. `#2`)
 - All tasks and their status (`[x]` = done, `[!]` = failed, `[ ]` = incomplete)
 - Platform (web or mobile)
 - Verification scenarios
@@ -24,7 +25,7 @@ Print the current state:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  TEAMS  Resuming — [N of M tasks already done]
+  RALPH-TEAMS  Plan #[N] — Resuming — [N of M tasks already done]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   ✓  Task 1: Project Setup          [done]
   ✓  Task 2: Auth System            [done]
@@ -73,7 +74,7 @@ After all tasks complete, print:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  TEAMS  Reviewing implementation...
+  RALPH-TEAMS  Reviewing implementation...
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -123,7 +124,7 @@ Read `ralph-teams/REVIEW.md`. If there are blocking findings:
 Final summary:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  TEAMS  Build complete!
+  RALPH-TEAMS  Plan #[N] — Build complete!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   ✓  Task 1: ...
   ✓  Task 2: ...
@@ -136,32 +137,12 @@ Then suggest:
 
 ---
 
-## Step 5: Optional - Update Docs
+## Step 5: Optional — Update Docs
 
 Ask the user:
 
-> **"Would you like to update your documentation to reflect the changes made? (README, changelog, API docs, etc.)"**
+> **"Would you like to update your documentation? Run `teams-document` to have the scribe update your README, ARCHITECTURE.md, and other docs."**
 
-If **yes**, spawn a lightweight documentation agent:
-
-```
-spawn_agent(
-  agent_type: "worker",
-  model: "gpt-5.4-mini",
-  message: "You are a documentation writer. Update the project documentation to reflect recent changes.
-
-    Changes made (git diff since build started):
-    [run: git diff [BASE_SHA]..HEAD --stat and git diff [BASE_SHA]..HEAD]
-
-    Tasks completed:
-    [paste task list from ralph-teams/PLAN.md]
-
-    Instructions:
-    - Find existing documentation files (README.md, CHANGELOG.md, docs/, etc.)
-    - Update them to reflect the new functionality
-    - Keep changes minimal and accurate - only document what was actually built
-    - Commit with message: 'docs: update documentation for [feature name]'"
-)
-```
+If yes, invoke the `teams-document` skill.
 
 If **no**, skip.

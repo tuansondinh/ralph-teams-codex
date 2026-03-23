@@ -29,14 +29,18 @@ Discuss with the user. Identify the target platform: **web** or **mobile** (this
 mkdir -p ralph-teams
 ```
 
-If `ralph-teams/PLAN.md` already exists, ask the user:
-> **A plan already exists from a previous build. Overwrite it, or use `teams-run` to resume?**
+**Determine the plan number:**
+- If `ralph-teams/PLAN.md` already exists, read its `Plan ID:` field and ask the user:
+  > **Plan #N already exists for "[feature name]". Overwrite it (creates Plan #N+1), or use `teams-run` to resume?**
+  - If overwrite: new plan number = previous number + 1
+- If no existing plan: plan number = 1
 
 Write `ralph-teams/PLAN.md`:
 
 ```markdown
-# Plan: [Feature Name]
+# Plan #[N]: [Feature Name]
 
+Plan ID: #[N]
 Generated: [date]
 Platform: web | mobile
 Status: draft
@@ -97,7 +101,7 @@ When approved:
 3. Print:
    ```
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     TEAMS  Starting build...
+     RALPH-TEAMS  Plan #[N] — Starting build...
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    ```
 
@@ -123,7 +127,7 @@ Wait for the subagent with `wait_agent` before starting the next. After each tas
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  TEAMS  [N of M tasks complete]
+  RALPH-TEAMS  [N of M tasks complete]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   ✓  Task 1: Project Setup          [done]
   ►  Task 2: Auth System            [building...]
@@ -147,7 +151,7 @@ After all tasks complete, print:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  TEAMS  Reviewing implementation...
+  RALPH-TEAMS  Reviewing implementation...
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -202,7 +206,7 @@ If no blocking findings, print final summary directly.
 Final summary format:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  TEAMS  Build complete!
+  RALPH-TEAMS  Plan #[N] — Build complete!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   ✓  Task 1: ...
   ✓  Task 2: ...
@@ -215,32 +219,12 @@ Then suggest:
 
 ---
 
-## Step 7: Optional - Update Docs
+## Step 7: Optional — Update Docs
 
 Ask the user:
 
-> **"Would you like to update your documentation to reflect the changes made? (README, changelog, API docs, etc.)"**
+> **"Would you like to update your documentation? Run `teams-document` to have the scribe update your README, ARCHITECTURE.md, and other docs."**
 
-If **yes**, spawn a lightweight documentation agent:
-
-```
-spawn_agent(
-  agent_type: "worker",
-  model: "gpt-5.4-mini",
-  message: "You are a documentation writer. Update the project documentation to reflect recent changes.
-
-    Changes made (git diff since build started):
-    [run: git diff [BASE_SHA]..HEAD --stat and git diff [BASE_SHA]..HEAD]
-
-    Tasks completed:
-    [paste task list from ralph-teams/PLAN.md]
-
-    Instructions:
-    - Find existing documentation files (README.md, CHANGELOG.md, docs/, etc.)
-    - Update them to reflect the new functionality
-    - Keep changes minimal and accurate - only document what was actually built
-    - Commit with message: 'docs: update documentation for [feature name]'"
-)
-```
+If yes, invoke the `teams-document` skill.
 
 If **no**, skip.
