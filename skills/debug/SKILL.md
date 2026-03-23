@@ -120,6 +120,25 @@ Fix applied: [commit message or brief description]
 
 ---
 
+## Step 5b: Update Review Report
+
+If `.ralph-teams/REVIEW.md` exists, append a fix summary section at the bottom:
+
+```markdown
+---
+
+## Fix Applied
+
+**Bug:** [one-line bug summary]
+**Fix:** [brief description of what was changed]
+**Commit:** [commit message]
+**Status:** Resolved
+```
+
+If the REVIEW.md already has findings related to this bug, update the relevant finding's status to `Resolved` inline as well.
+
+---
+
 ## Step 6: Done
 
 Print:
