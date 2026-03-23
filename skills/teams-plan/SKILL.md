@@ -34,12 +34,13 @@ mkdir -p ralph-teams
 ```
 
 **Determine the plan number:**
-- If `ralph-teams/PLAN.md` already exists, read its `Plan ID:` field and ask the user:
-  > **Plan #N already exists for "[feature name]". Overwrite it (creates Plan #N+1), or use `teams-run` to resume?**
-  - If overwrite: new plan number = previous number + 1
-- If no existing plan: plan number = 1
+- Check for existing plan files: `ralph-teams/PLAN-*.md`
+- Count existing files to determine N (next plan number = count + 1)
+- If plans exist, inform the user:
+  > **Found [N-1] existing plan(s). Creating Plan #[N]. Use `teams-run` to resume an existing plan.**
+- If no existing plans: plan number = 1
 
-Write `ralph-teams/PLAN.md`:
+Write `ralph-teams/PLAN-[N].md`:
 
 ```markdown
 # Plan #[N]: [Feature Name]
@@ -75,9 +76,9 @@ After writing the draft plan, ask the user:
 
 If **yes**:
 1. **Check for a second-opinion coding CLI:** Look for an available tool such as `mcp__Multi_CLI__Ask_Claude`, `mcp__Multi_CLI__Ask_Gemini`, or `mcp__Multi_CLI__Ask_OpenCode`.
-   - If available: read `ralph-teams/PLAN.md` and call that tool with the prompt: *"Review this implementation plan. Identify missing tasks, edge cases, or architectural gaps. Be concise."*
-   - If not available: use `spawn_agent` to start a reviewer subagent and prompt it to review `ralph-teams/PLAN.md` for completeness, edge cases, and architectural gaps.
-2. Evaluate the feedback. Incorporate valid findings into `ralph-teams/PLAN.md`.
+   - If available: read `ralph-teams/PLAN-[N].md` and call that tool with the prompt: *"Review this implementation plan. Identify missing tasks, edge cases, or architectural gaps. Be concise."*
+   - If not available: use `spawn_agent` to start a reviewer subagent and prompt it to review `ralph-teams/PLAN-[N].md` for completeness, edge cases, and architectural gaps.
+2. Evaluate the feedback. Incorporate valid findings into `ralph-teams/PLAN-[N].md`.
 3. Briefly tell the user what changed.
 
 If **no**: skip to Step 3.
@@ -86,7 +87,7 @@ If **no**: skip to Step 3.
 
 ## Step 3: Get Approval
 
-Display `ralph-teams/PLAN.md` and ask:
+Display `ralph-teams/PLAN-[N].md` and ask:
 
 > **"Plan looks good? Reply `yes` to start, or tell me what to change."**
 
@@ -96,7 +97,7 @@ Display `ralph-teams/PLAN.md` and ask:
 
 When approved:
 
-1. Update `ralph-teams/PLAN.md` status to `approved`.
+1. Update `ralph-teams/PLAN-[N].md` status to `approved`.
 2. Capture the base commit SHA before building starts:
    ```bash
    git rev-parse HEAD
@@ -122,14 +123,14 @@ spawn_agent(
     Platform: [web|mobile]
 
     Full plan:
-    [paste ralph-teams/PLAN.md content]
+    [paste ralph-teams/PLAN-[N].md content]
 
     Your task: implement Task [N] only. Verify it works using [Playwright|Maestro], then commit.
     If [Playwright|Maestro] tools are not available, run tests/lint instead and note that E2E verification was skipped."
 )
 ```
 
-Wait for the subagent with `wait_agent` before starting the next. After each task, update `ralph-teams/PLAN.md` (change `[ ]` to `[x]` on success, `[!]` on failure) and print the task board:
+Wait for the subagent with `wait_agent` before starting the next. After each task, update `ralph-teams/PLAN-[N].md` (change `[ ]` to `[x]` on success, `[!]` on failure) and print the task board:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -173,7 +174,7 @@ spawn_agent(
     Use `git diff [BASE_SHA]..HEAD` to see all changes.
 
     Full plan:
-    [paste ralph-teams/PLAN.md content]
+    [paste ralph-teams/PLAN-[N].md content]
 
     Write your review to ralph-teams/REVIEW.md.
     If a second-opinion coding CLI is available, use it for a second opinion."
