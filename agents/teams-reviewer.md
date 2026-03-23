@@ -53,24 +53,17 @@ Note any failures.
 
 ### 4. Second Opinion (conditional)
 
-Only seek a second opinion if **at least one** of these is true:
+Only seek a second opinion if **all** of these are true:
 - The build contains complex tasks (auth, migrations, architecture, security, algorithms)
-- You have blocking findings you are not fully confident about
-- The diff is large and touches many systems at once
+- Claude CLI is available: check with `which claude`
 
-If neither applies, skip this step.
+If the task is not complex, **skip this step entirely.**
+If `which claude` returns nothing, **skip this step entirely.**
 
-If seeking a second opinion, try the following in order — use the first one available:
-
-1. **Claude Opus via CLI** — check if a `claude` CLI tool is accessible and run:
-   ```bash
-   echo "[findings summary + diff stats]" | claude --model claude-opus-4-5 "I reviewed this implementation and found the following. Do you agree? Anything I missed? Be concise."
-   ```
-
-2. **External AI via MCP** — use `ToolSearch` to find any MCP tool that lets you query another AI or CLI (e.g. tools with names like `ask_*`, `query_*`, or any MCP exposing another model or provider). Call it with:
-   > *"I reviewed this implementation and found the following. Do you agree? Anything I missed? Be concise. [paste findings summary + diff stats]"*
-
-3. **Skip** — if neither is available, proceed without a second opinion.
+If both conditions are met, run:
+```bash
+claude --model claude-opus-4-6 -p "I reviewed this implementation and found the following. Do you agree? Anything I missed? Be concise.\n\n[findings summary + diff stats]"
+```
 
 Incorporate any additional valid findings.
 
