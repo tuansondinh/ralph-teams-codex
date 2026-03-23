@@ -46,7 +46,7 @@ Save this as `BASE_SHA`.
 
 For **each incomplete task** (`[ ]` or `[!]`) **in order**, use `spawn_agent`. Pick the model from the task's complexity annotation:
 - `complexity: simple` → `model: "gpt-5.4-mini"`
-- `complexity: complex` → `model: "gpt-5.4"`
+- `complexity: standard` → `model: "gpt-5.4"`
 
 ```
 spawn_agent(
