@@ -12,8 +12,8 @@ You are the orchestrator. Resume an existing build by running all incomplete tas
 
 ## Step 1: Find the Plan
 
-Read `ralph-teams/PLAN.md`. If not found:
-> `ralph-teams/PLAN.md` not found. Use `teams-plan` to create a plan first.
+Read `.ralph-teams/PLAN.md`. If not found:
+> `.ralph-teams/PLAN.md` not found. Use `teams-plan` to create a plan first.
 
 Identify:
 - Plan ID (the `Plan ID:` field — e.g. `#2`)
@@ -57,14 +57,14 @@ spawn_agent(
     Platform: [web|mobile]
 
     Full plan:
-    [paste ralph-teams/PLAN.md content]
+    [paste .ralph-teams/PLAN.md content]
 
     Your task: implement Task [N] only. Verify it works using [Playwright|Maestro], then commit.
     If [Playwright|Maestro] tools are not available, run tests/lint instead and note that E2E verification was skipped."
 )
 ```
 
-Wait for each subagent with `wait_agent` before starting the next. As soon as you have recorded the result, call `close_agent` for that finished builder. After each task, update `ralph-teams/PLAN.md` (change `[ ]` to `[x]` on success, `[!]` on failure) and reprint the task board.
+Wait for each subagent with `wait_agent` before starting the next. As soon as you have recorded the result, call `close_agent` for that finished builder. After each task, update `.ralph-teams/PLAN.md` (change `[ ]` to `[x]` on success, `[!]` on failure) and reprint the task board.
 
 If a builder subagent fails, log it as failed and continue.
 
@@ -92,20 +92,20 @@ spawn_agent(
     Use `git diff [BASE_SHA]..HEAD` to see all changes.
 
     Full plan:
-    [paste ralph-teams/PLAN.md content]
+    [paste .ralph-teams/PLAN.md content]
 
-    Write your review to ralph-teams/REVIEW.md.
+    Write your review to .ralph-teams/REVIEW.md.
     If a second-opinion coding CLI is available, use it for a second opinion."
 )
 ```
 
-Wait for the reviewer with `wait_agent`. After you have read `ralph-teams/REVIEW.md` and captured anything you need from the result, call `close_agent`.
+Wait for the reviewer with `wait_agent`. After you have read `.ralph-teams/REVIEW.md` and captured anything you need from the result, call `close_agent`.
 
 ---
 
 ## Step 4: Apply Fixes
 
-Read `ralph-teams/REVIEW.md`. If there are blocking findings:
+Read `.ralph-teams/REVIEW.md`. If there are blocking findings:
 1. Print a summary of the findings.
 2. Spawn a fix-pass builder:
    ```
@@ -115,7 +115,7 @@ Read `ralph-teams/REVIEW.md`. If there are blocking findings:
      message: "You are applying review fixes (not implementing a new task).
 
        Review findings to fix:
-       [paste blocking findings from ralph-teams/REVIEW.md]
+       [paste blocking findings from .ralph-teams/REVIEW.md]
 
        Platform: [web|mobile]
 

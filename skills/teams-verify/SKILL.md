@@ -12,8 +12,8 @@ You guide the user through manually verifying the completed build end-to-end. On
 
 ## Step 1: Load the Plan
 
-Read `ralph-teams/PLAN.md`. If not found:
-> `ralph-teams/PLAN.md` not found. Run `teams-plan` first.
+Read `.ralph-teams/PLAN.md`. If not found:
+> `.ralph-teams/PLAN.md` not found. Run `teams-plan` first.
 
 Extract:
 - Plan ID (the `Plan ID:` field — e.g. `#2`)
@@ -21,7 +21,7 @@ Extract:
 - Acceptance criteria
 - Verification scenarios
 
-Also read `ralph-teams/REVIEW.md` if it exists (to know what was already flagged by the automated reviewer).
+Also read `.ralph-teams/REVIEW.md` if it exists (to know what was already flagged by the automated reviewer).
 
 ---
 
@@ -41,7 +41,7 @@ Wait for their response. Note any skips.
 
 ## Step 3: Walk Through Scenarios
 
-For each verification scenario from `ralph-teams/PLAN.md`, present it one at a time:
+For each verification scenario from `.ralph-teams/PLAN.md`, present it one at a time:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -77,7 +77,7 @@ Keep going until all scenarios are covered.
 
 ## Step 4: Write Verification Report
 
-Write results to `ralph-teams/VERIFY.md`:
+Write results to `.ralph-teams/VERIFY.md`:
 
 ```markdown
 # Manual Verification Report: [Feature Name]
@@ -132,9 +132,9 @@ If there are failures, offer:
 > - `teams-debug` — fix bugs one at a time with full plan context (recommended)
 > - **Fix all** — I spawn a single builder to address all failures at once
 
-If they choose **`teams-debug`**: invoke the `teams-debug` skill for each failed scenario in order, passing the scenario name and failure description. After each fix, mark the scenario as `FIXED` in `ralph-teams/VERIFY.md`.
+If they choose **`teams-debug`**: invoke the `teams-debug` skill for each failed scenario in order, passing the scenario name and failure description. After each fix, mark the scenario as `FIXED` in `.ralph-teams/VERIFY.md`.
 
-If they choose **fix all**: read the failures from `ralph-teams/VERIFY.md` and use `spawn_agent` to start a builder subagent:
+If they choose **fix all**: read the failures from `.ralph-teams/VERIFY.md` and use `spawn_agent` to start a builder subagent:
 
 ```
 spawn_agent(
@@ -143,9 +143,9 @@ spawn_agent(
   message: "You are fixing multiple bugs found during manual verification.
 
     Failed scenarios:
-    [paste full list of failures from ralph-teams/VERIFY.md]
+    [paste full list of failures from .ralph-teams/VERIFY.md]
 
-    Feature plan (ralph-teams/PLAN.md):
+    Feature plan (.ralph-teams/PLAN.md):
     [paste full PLAN.md content]
 
     Instructions:

@@ -12,19 +12,19 @@ Fix a bug related to the current Teams plan. This skill can be triggered:
 
 It reads the existing plan and any available verification/review reports to understand context before fixing.
 
-**Prerequisite:** `ralph-teams/PLAN.md` must exist. If not found, stop and tell the user to run `teams-plan` first.
+**Prerequisite:** `.ralph-teams/PLAN.md` must exist. If not found, stop and tell the user to run `teams-plan` first.
 
 ---
 
 ## Step 1: Load Context
 
-Check that `ralph-teams/PLAN.md` exists. If not:
-> `ralph-teams/PLAN.md` not found. This skill requires an active Teams plan. Run `teams-plan` first.
+Check that `.ralph-teams/PLAN.md` exists. If not:
+> `.ralph-teams/PLAN.md` not found. This skill requires an active Teams plan. Run `teams-plan` first.
 
 Read all available context files:
-- `ralph-teams/PLAN.md` — the feature plan (note its `Plan ID:` field)
-- `ralph-teams/VERIFY.md` — if it exists, the manual verification report with failed scenarios
-- `ralph-teams/REVIEW.md` — if it exists, the automated review findings
+- `.ralph-teams/PLAN.md` — the feature plan (note its `Plan ID:` field)
+- `.ralph-teams/VERIFY.md` — if it exists, the manual verification report with failed scenarios
+- `.ralph-teams/REVIEW.md` — if it exists, the automated review findings
 
 ---
 
@@ -75,15 +75,15 @@ spawn_agent(
     Bug report:
     [user's bug description]
 
-    Feature plan (ralph-teams/PLAN.md):
+    Feature plan (.ralph-teams/PLAN.md):
     [paste full PLAN.md content]
 
     [If VERIFY.md exists:]
-    Verification report (ralph-teams/VERIFY.md):
+    Verification report (.ralph-teams/VERIFY.md):
     [paste VERIFY.md content]
 
     [If REVIEW.md exists:]
-    Review findings (ralph-teams/REVIEW.md):
+    Review findings (.ralph-teams/REVIEW.md):
     [paste REVIEW.md content]
 
     Instructions:
@@ -110,7 +110,7 @@ Wait for the builder with `wait_agent`. After you have handled the result, call 
 
 ## Step 5: Update Verification Report
 
-After the builder completes, if `ralph-teams/VERIFY.md` exists, update the relevant scenario's status from `FAIL` to `FIXED`:
+After the builder completes, if `.ralph-teams/VERIFY.md` exists, update the relevant scenario's status from `FAIL` to `FIXED`:
 
 ```markdown
 ### ✓ Scenario N: [Name]

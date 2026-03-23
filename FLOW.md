@@ -10,7 +10,7 @@ flowchart TD
     classDef optional fill:#ffe4e1,stroke:#ff9999,stroke-width:1px,stroke-dasharray:4,color:#333
 
     P1["teams-plan - Discuss feature, write plan, get approval"]:::cmd
-    P["ralph-teams/PLAN.md"]:::doc
+    P[".ralph-teams/PLAN.md"]:::doc
     CX1["Codex second opinion on plan (optional)"]:::optional
 
     P1 --> P
@@ -32,7 +32,7 @@ flowchart TD
 
     R["Reviewer Agent - Reviews all changes"]:::agent
     CX2["Codex second opinion on review (optional)"]:::optional
-    REV["ralph-teams/REVIEW.md"]:::doc
+    REV[".ralph-teams/REVIEW.md"]:::doc
     BF["Builder Agent - Fixes"]:::agent
     DOCS["Docs update agent (optional)"]:::optional
 

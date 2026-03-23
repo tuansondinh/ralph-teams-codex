@@ -73,7 +73,7 @@ flowchart TD
     classDef optional fill:#ffe4e1,stroke:#ff9999,stroke-width:1px,stroke-dasharray:4,color:#333
 
     P1["teams-plan - Discuss feature, write plan, get approval"]:::cmd
-    P["ralph-teams/PLAN.md"]:::doc
+    P[".ralph-teams/PLAN.md"]:::doc
     CX1["Codex second opinion on plan (optional)"]:::optional
 
     P1 --> P
@@ -95,7 +95,7 @@ flowchart TD
 
     R["Reviewer Agent - Reviews all changes"]:::agent
     CX2["Codex second opinion on review (optional)"]:::optional
-    REV["ralph-teams/REVIEW.md"]:::doc
+    REV[".ralph-teams/REVIEW.md"]:::doc
     BF["Builder Agent - Fixes"]:::agent
     DOCS["Scribe Agent - Updates docs (optional)"]:::optional
 
@@ -140,10 +140,10 @@ Status symbols: `✓` done · `►` building · `✗` failed · `○` pending ·
 
 ## Output Files
 
-All build artifacts are written to `./ralph-teams/` in your project:
+All build artifacts are written to `./.ralph-teams/` in your project:
 
 | File | Contents |
 |------|----------|
-| `ralph-teams/PLAN.md` | Plan ID, tasks with complexity, acceptance criteria, verification scenarios |
-| `ralph-teams/REVIEW.md` | Reviewer findings |
-| `ralph-teams/VERIFY.md` | Manual verification results |
+| `.ralph-teams/PLAN.md` | Plan ID, tasks with complexity, acceptance criteria, verification scenarios |
+| `.ralph-teams/REVIEW.md` | Reviewer findings |
+| `.ralph-teams/VERIFY.md` | Manual verification results |

@@ -8,16 +8,16 @@ user-invocable: true
 
 Update existing project documentation to reflect what was built in the current plan. Spawns a scribe agent that finds relevant docs and updates them — no new files created unless explicitly needed.
 
-**Prerequisite:** `ralph-teams/PLAN.md` must exist. If not found, stop:
-> `ralph-teams/PLAN.md` not found. Run `teams-plan` first.
+**Prerequisite:** `.ralph-teams/PLAN.md` must exist. If not found, stop:
+> `.ralph-teams/PLAN.md` not found. Run `teams-plan` first.
 
 ---
 
 ## Step 1: Load Context
 
 Read:
-- `ralph-teams/PLAN.md` — plan ID, feature name, tasks completed, acceptance criteria
-- `ralph-teams/REVIEW.md` — if it exists, for additional context on what was changed
+- `.ralph-teams/PLAN.md` — plan ID, feature name, tasks completed, acceptance criteria
+- `.ralph-teams/REVIEW.md` — if it exists, for additional context on what was changed
 - Run `git log --oneline` to identify recent commits from the build
 
 ---
@@ -57,10 +57,10 @@ spawn_agent(
     Feature: [feature name]
 
     Tasks completed:
-    [paste task list from ralph-teams/PLAN.md]
+    [paste task list from .ralph-teams/PLAN.md]
 
     Acceptance criteria:
-    [paste acceptance criteria from ralph-teams/PLAN.md]
+    [paste acceptance criteria from .ralph-teams/PLAN.md]
 
     Instructions:
     1. Find all existing documentation files: README.md, ARCHITECTURE.md, docs/**, CHANGELOG.md, or any other .md files that describe the project.

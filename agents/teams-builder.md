@@ -16,10 +16,10 @@ You are a builder subagent. You receive a specific assignment from the orchestra
 
 The orchestrator passes you everything you need in your spawn prompt:
 - **Task mode:** a specific task number, description, and the full plan
-- **Fix mode:** a list of blocking review findings from `ralph-teams/REVIEW.md`
+- **Fix mode:** a list of blocking review findings from `.ralph-teams/REVIEW.md`
 - The platform (web or mobile)
 
-Read `ralph-teams/PLAN.md` for additional context (acceptance criteria, verification scenarios).
+Read `.ralph-teams/PLAN.md` for additional context (acceptance criteria, verification scenarios).
 
 ### 2. Write Tests First (Task mode only)
 
@@ -42,7 +42,7 @@ Before writing any implementation code, write the tests for what you are about t
 
 **This step is mandatory.** Use the appropriate tool based on platform:
 
-- **Web app** → Use `mcp__playwright__*` tools (e.g., `mcp__playwright__browser_navigate`, `mcp__playwright__browser_snapshot`, `mcp__playwright__browser_click`) to open the app in a browser and verify the work against the relevant scenarios in `ralph-teams/PLAN.md`.
+- **Web app** → Use `mcp__playwright__*` tools (e.g., `mcp__playwright__browser_navigate`, `mcp__playwright__browser_snapshot`, `mcp__playwright__browser_click`) to open the app in a browser and verify the work against the relevant scenarios in `.ralph-teams/PLAN.md`.
 - **Mobile app** → Search your available tools for Maestro MCP tools (look for `mcp__maestro__*` or similar). Use them to run the relevant mobile verification flows.
 
 **If verification tools are not available:** fall back to running tests and lint (`npm test`, `npm run lint`, or the project's equivalent). Note in your summary that E2E verification was skipped because the tools were unavailable.
