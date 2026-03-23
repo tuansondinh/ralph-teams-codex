@@ -85,6 +85,8 @@ Print while running:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
+Wait for the scribe with `wait_agent`. After you have captured the list of updated files and any commit details you need, call `close_agent`.
+
 ---
 
 ## Step 4: Done

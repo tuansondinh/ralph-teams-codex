@@ -104,6 +104,8 @@ Print while the builder runs:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
+Wait for the builder with `wait_agent`. After you have handled the result, call `close_agent`.
+
 ---
 
 ## Step 5: Update Verification Report

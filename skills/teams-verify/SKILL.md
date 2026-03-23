@@ -157,4 +157,6 @@ spawn_agent(
 )
 ```
 
+Wait for the builder with `wait_agent`. After you have handled the result and updated any verification state, call `close_agent`.
+
 Then offer to re-run verification on just the failed scenarios.

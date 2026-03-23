@@ -77,7 +77,7 @@ After writing the draft plan, ask the user:
 If **yes**:
 1. **Check for a second-opinion coding CLI:** Look for an available tool such as `mcp__Multi_CLI__Ask_Claude`, `mcp__Multi_CLI__Ask_Gemini`, or `mcp__Multi_CLI__Ask_OpenCode`.
    - If available: read `ralph-teams/PLAN-[N].md` and call that tool with the prompt: *"Review this implementation plan. Identify missing tasks, edge cases, or architectural gaps. Be concise."*
-   - If not available: use `spawn_agent` to start a reviewer subagent and prompt it to review `ralph-teams/PLAN-[N].md` for completeness, edge cases, and architectural gaps.
+   - If not available: use `spawn_agent` to start a reviewer subagent and prompt it to review `ralph-teams/PLAN-[N].md` for completeness, edge cases, and architectural gaps. After `wait_agent` returns and you have incorporated the feedback, call `close_agent`.
 2. Evaluate the feedback. Incorporate valid findings into `ralph-teams/PLAN-[N].md`.
 3. Briefly tell the user what changed.
 
@@ -130,7 +130,7 @@ spawn_agent(
 )
 ```
 
-Wait for the subagent with `wait_agent` before starting the next. After each task, update `ralph-teams/PLAN-[N].md` (change `[ ]` to `[x]` on success, `[!]` on failure) and print the task board:
+Wait for the subagent with `wait_agent` before starting the next. As soon as you have recorded the result, call `close_agent` for that finished builder. After each task, update `ralph-teams/PLAN-[N].md` (change `[ ]` to `[x]` on success, `[!]` on failure) and print the task board:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -181,6 +181,8 @@ spawn_agent(
 )
 ```
 
+Wait for the reviewer with `wait_agent`. After you have read `ralph-teams/REVIEW.md` and captured anything you need from the result, call `close_agent`.
+
 ---
 
 ## Step 6: Apply Fixes
@@ -206,7 +208,8 @@ If there are blocking findings:
        Commit all fixes together with message: 'fix: address review findings'."
    )
    ```
-3. Print final summary when done.
+3. Wait for the fix-pass builder with `wait_agent`, then call `close_agent` once its result has been handled.
+4. Print final summary when done.
 
 If no blocking findings, print final summary directly.
 

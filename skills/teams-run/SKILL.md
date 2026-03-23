@@ -64,7 +64,7 @@ spawn_agent(
 )
 ```
 
-Wait for each subagent with `wait_agent` before starting the next. After each task, update `ralph-teams/PLAN.md` (change `[ ]` to `[x]` on success, `[!]` on failure) and reprint the task board.
+Wait for each subagent with `wait_agent` before starting the next. As soon as you have recorded the result, call `close_agent` for that finished builder. After each task, update `ralph-teams/PLAN.md` (change `[ ]` to `[x]` on success, `[!]` on failure) and reprint the task board.
 
 If a builder subagent fails, log it as failed and continue.
 
@@ -99,6 +99,8 @@ spawn_agent(
 )
 ```
 
+Wait for the reviewer with `wait_agent`. After you have read `ralph-teams/REVIEW.md` and captured anything you need from the result, call `close_agent`.
+
 ---
 
 ## Step 4: Apply Fixes
@@ -122,6 +124,7 @@ Read `ralph-teams/REVIEW.md`. If there are blocking findings:
        Commit all fixes together with message: 'fix: address review findings'."
    )
    ```
+3. Wait for the fix-pass builder with `wait_agent`, then call `close_agent` once its result has been handled.
 
 Final summary:
 ```
