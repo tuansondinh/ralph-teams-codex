@@ -6,11 +6,19 @@ const os = require("os");
 
 const repoRoot = path.resolve(__dirname, "..");
 const sourceSkillsDir = path.join(repoRoot, "skills");
+const skillDirectoryByName = {
+  "teams-plan": "teams-plan",
+  "teams-run": "teams-run",
+  "teams-verify": "teams-verify",
+  "teams-debug": "debug",
+  "teams-document": "teams-document"
+};
 const defaultSkillNames = [
   "teams-plan",
   "teams-run",
   "teams-verify",
-  "loop-run"
+  "teams-debug",
+  "teams-document"
 ];
 
 function printHelp() {
@@ -27,7 +35,7 @@ Usage:
 Options:
   --global        Install into ~/.codex/skills or $CODEX_HOME/skills
   --local         Install into ./.codex/skills
-  --skills <csv>  Comma-separated list of skill directories to install
+  --skills <csv>  Comma-separated list of skill names to install
   --uninstall     Remove installed skills instead of copying them
   --help          Show this help
 `);
@@ -81,7 +89,7 @@ function resolveTargetSkillsDir(scope) {
 }
 
 function ensureKnownSkills(skills) {
-  const unknown = skills.filter((skill) => !defaultSkillNames.includes(skill));
+  const unknown = skills.filter((skill) => !Object.hasOwn(skillDirectoryByName, skill));
   if (unknown.length > 0) {
     throw new Error(`Unknown skills: ${unknown.join(", ")}`);
   }
@@ -98,7 +106,7 @@ function removeDirectory(targetDir) {
 function installSkills(targetSkillsDir, skills) {
   fs.mkdirSync(targetSkillsDir, { recursive: true });
   for (const skill of skills) {
-    const sourceDir = path.join(sourceSkillsDir, skill);
+    const sourceDir = path.join(sourceSkillsDir, skillDirectoryByName[skill]);
     const targetDir = path.join(targetSkillsDir, skill);
     if (!fs.existsSync(sourceDir)) {
       throw new Error(`Missing source skill directory: ${sourceDir}`);

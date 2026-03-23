@@ -122,7 +122,6 @@ Each task runs in its own isolated subagent with a clean 200k token context wind
 | `teams-verify` | Walk through manual E2E verification scenario by scenario |
 | `teams-debug` | Fix a bug in relation to the active plan — usable anytime |
 | `teams-document` | Update existing docs (README, ARCHITECTURE.md, etc.) for the latest plan |
-| `loop-run` | Resume phased execution |
 
 ## Output
 

@@ -18,7 +18,6 @@ ralph-teams-plugin/
 │   ├── teams-run/SKILL.md        # /teams:run  — resume an existing plan
 │   ├── teams-verify/SKILL.md     # /teams:verify — manual E2E verification walkthrough
 │   ├── loop-plan/SKILL.md        # /teams:loop-plan — phased plan + execute
-│   └── loop-run/SKILL.md         # /teams:loop-run  — resume a phased plan
 ├── README.md
 ├── FLOW.md                       # Mermaid execution flow diagram
 └── codebase.md                   # This file
@@ -49,7 +48,6 @@ Frontmatter fields: `name`, `description`, `user-invocable: true`.
 | `teams-run/SKILL.md` | `/teams:run` | Resume a plan; runs incomplete tasks, then review + fix |
 | `teams-verify/SKILL.md` | `/teams:verify` | Walk user through manual E2E verification scenario by scenario |
 | `loop-plan/SKILL.md` | `/teams:loop-plan` | Phased plan + execute (multi-phase mode) |
-| `loop-run/SKILL.md` | `/teams:loop-run` | Resume a phased plan |
 
 ---
 
