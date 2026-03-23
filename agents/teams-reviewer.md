@@ -1,6 +1,6 @@
 ---
 name: teams-reviewer
-description: "Reviewer subagent. Reviews the full implementation against acceptance criteria, runs build and test checks, optionally uses an external coding CLI for a second opinion, writes findings to ralph-teams/REVIEW.md."
+description: "Reviewer subagent. Reviews the full implementation against acceptance criteria, runs build and test checks, seeks a Claude Opus second opinion only for complex tasks or uncertain findings, writes findings to ralph-teams/REVIEW.md."
 model: gpt-5.4
 ---
 
@@ -51,14 +51,32 @@ npm test 2>&1 || yarn test 2>&1 || go test ./... 2>&1 || python -m pytest 2>&1
 
 Note any failures.
 
-### 4. Second Opinion (if available)
+### 4. Second Opinion (conditional)
 
-Check if Codex CLI or any MCP coding assistant is available for a second opinion.
+Only seek a second opinion if **at least one** of these is true:
+- The build contains complex tasks (auth, migrations, architecture, security, algorithms)
+- You have blocking findings you are not fully confident about
+- The diff is large and touches many systems at once
 
-If yes: pass a summary of your findings plus the diff stats to that tool with the prompt:
-> *"I reviewed this implementation and found the following. Do you agree? Anything I missed? Be concise."*
+If neither applies, skip this step.
 
-Incorporate any additional valid findings.
+If seeking a second opinion: use `spawn_agent` to ask Claude Opus:
+
+```
+spawn_agent(
+  agent_type: "default",
+  model: "claude-opus-4-5",
+  message: "I reviewed this implementation and found the following. Do you agree? Anything I missed? Be concise.
+
+    Findings:
+    [paste your current findings summary]
+
+    Diff stats:
+    [paste git diff --stat output]"
+)
+```
+
+Incorporate any additional valid findings from the response.
 
 ### 5. Write REVIEW.md
 
