@@ -1,12 +1,12 @@
 ---
 name: teams-plan
-description: "Plan and build a feature. Orchestrate a plan, spawn sequential builder subagents per task with Playwright or Maestro verification, then run a reviewer and a fix pass if needed."
+description: "Plan and build a feature. Orchestrate a plan, spawn sequential builder subagents per phase with Playwright or Maestro verification, then run a reviewer and a fix pass if needed."
 user-invocable: true
 ---
 
 # Teams: Plan + Build
 
-You are the planner and orchestrator. Your job: discuss the feature, create a plan, execute it with sequential builder subagents, review the result with an Opus reviewer, and apply fixes.
+You are the planner and orchestrator. Your job: discuss the feature, create a plan, execute it with sequential builder subagents, review the result with a reviewer, and apply fixes.
 
 ---
 
@@ -16,16 +16,16 @@ Ask: **"What do you want to build?"**
 
 Discuss with the user. Identify the target platform: **web** or **mobile** (this determines whether the builder uses Playwright or Maestro for verification).
 
-**Task sizing:** Each task runs in its own builder agent with a 200k token context window — everything in the task must fit within one session. Tasks should be meaningful chunks of work, not single lines. Use **subtasks** to break a task into concrete steps the builder will follow.
-- **Too small:** a task with only one trivial action — merge it into a related task or make it a subtask.
-- **Too big:** a task whose subtasks collectively require more code than fits in one session — split into multiple tasks.
-- **Right size:** "Implement user authentication" (with subtasks: signup endpoint, login endpoint, JWT middleware, tests), "Build product listing page" (with subtasks: list component, filter sidebar, pagination).
+**Phase sizing:** Each phase runs in its own builder agent with a 200k token context window. A well-sized phase should fill **50–60% of that context** — meaning the builder will read, write, and reason about enough code that it uses roughly half its available context doing the work. Phases contain tasks (concrete steps the builder follows).
+- **Too small:** a phase that takes only a few minutes or touches one file — merge it into a related phase or make it a task within a larger phase.
+- **Too big:** a phase whose tasks collectively require more code than fits in one builder session — split it into two phases.
+- **Right size:** "Implement full auth system" (tasks: user model + DB migration, signup/login endpoints, JWT middleware + refresh tokens, password reset flow, email verification, auth guards on all protected routes, unit + integration tests), "Build product catalog" (tasks: product model + seed data, list page with filters + pagination, detail page, search endpoint, cart integration, component tests).
 
-> **Rule of thumb:** a task = one meaningful feature area. Subtasks = the concrete steps the builder takes to complete it. When in doubt, split at the task level.
+> **Rule of thumb:** a phase = one meaningful feature area with enough depth to keep a builder busy for a substantial session. Tasks = the concrete steps the builder takes to complete it. Aim for 4–8 tasks per phase. When in doubt, make phases larger rather than smaller.
 
-**Task complexity:** For each task, assign a complexity level — this determines which model the builder uses:
-- `simple` → `gpt-5.4-mini`: truly trivial tasks only — renaming, copy changes, config tweaks, adding a single field
-- `standard` → `gpt-5.4`: everything else — the default for any task with real logic, UI, CRUD, auth, migrations, architecture, etc.
+**Phase complexity:** For each phase, assign a complexity level — this determines which model the builder uses:
+- `simple` → `gpt-5.4-mini`: truly trivial phases only — renaming, copy changes, config tweaks, adding a single field
+- `standard` → `gpt-5.4`: everything else — the default for any phase with real logic, UI, CRUD, auth, migrations, architecture, etc.
 
 **Prepare the build directory:**
 
@@ -50,17 +50,17 @@ Generated: [date]
 Platform: web | mobile
 Status: draft
 
-## Tasks
-1. [ ] Task 1: [Description] — complexity: simple
-   - [Subtask 1 description]
-   - [Subtask 2 description]
-2. [ ] Task 2: [Description] — complexity: standard
-   - [Subtask 1 description]
-   - [Subtask 2 description]
-   - [Subtask 3 description]
-3. [ ] Task 3: [Description] — complexity: standard
-   - [Subtask 1 description]
-   - [Subtask 2 description]
+## Phases
+1. [ ] Phase 1: [Description] — complexity: simple
+   - [Task 1 description]
+   - [Task 2 description]
+2. [ ] Phase 2: [Description] — complexity: standard
+   - [Task 1 description]
+   - [Task 2 description]
+   - [Task 3 description]
+3. [ ] Phase 3: [Description] — complexity: standard
+   - [Task 1 description]
+   - [Task 2 description]
 
 ## Acceptance Criteria
 - [Criterion 1]
@@ -83,7 +83,7 @@ After writing the draft plan, ask the user:
 
 If **yes**:
 1. **Check for a second-opinion coding CLI:** Look for an available tool such as `mcp__Multi_CLI__Ask_Claude`, `mcp__Multi_CLI__Ask_Gemini`, or `mcp__Multi_CLI__Ask_OpenCode`.
-   - If available: read `.ralph-teams/PLAN-[N].md` and call that tool with the prompt: *"Review this implementation plan. Identify missing tasks, edge cases, or architectural gaps. Be concise."*
+   - If available: read `.ralph-teams/PLAN-[N].md` and call that tool with the prompt: *"Review this implementation plan. Identify missing phases, edge cases, or architectural gaps. Be concise."*
    - If not available: use `spawn_agent` to start a reviewer subagent and prompt it to review `.ralph-teams/PLAN-[N].md` for completeness, edge cases, and architectural gaps. After `wait_agent` returns and you have incorporated the feedback, call `close_agent`.
 2. Evaluate the feedback. Incorporate valid findings into `.ralph-teams/PLAN-[N].md`.
 3. Briefly tell the user what changed.
@@ -117,38 +117,38 @@ When approved:
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    ```
 
-For **each task in order**, use `spawn_agent` to start a builder subagent. Pick the model from the task's complexity annotation:
+For **each phase in order**, use `spawn_agent` to start a builder subagent. Pick the model from the phase's complexity annotation:
 - `complexity: simple` → `model: "gpt-5.4-mini"`
 - `complexity: standard` → `model: "gpt-5.4"`
 
 ```
 spawn_agent(
   agent_type: "worker",
-  model: "[gpt-5.4-mini | gpt-5.4 based on task complexity]",
-  message: "You are implementing Task [N] of [M]: [task description].
+  model: "[gpt-5.4-mini | gpt-5.4 based on phase complexity]",
+  message: "You are implementing Phase [N] of [M]: [phase description].
 
-    Subtasks to complete:
-    [list subtasks from the task]
+    Tasks to complete:
+    [list tasks from the phase]
 
     Platform: [web|mobile]
 
     Full plan:
     [paste .ralph-teams/PLAN-[N].md content]
 
-    Your task: implement Task [N] only, completing all its subtasks. Verify it works using [Playwright|Maestro], then commit.
+    Your assignment: implement Phase [N] only, completing all its tasks. Verify it works using [Playwright|Maestro], then commit.
     If [Playwright|Maestro] tools are not available, run tests/lint instead and note that E2E verification was skipped."
 )
 ```
 
-Wait for the subagent with `wait_agent` before starting the next. As soon as you have recorded the result, call `close_agent` for that finished builder. After each task, update `.ralph-teams/PLAN-[N].md` (change `[ ]` to `[x]` on success, `[!]` on failure) and print the task board:
+Wait for the subagent with `wait_agent` before starting the next. As soon as you have recorded the result, call `close_agent` for that finished builder. After each phase, update `.ralph-teams/PLAN-[N].md` (change `[ ]` to `[x]` on success, `[!]` on failure) and print the phase board:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  RALPH-TEAMS  [N of M tasks complete]
+  RALPH-TEAMS  [N of M phases complete]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ✓  Task 1: Project Setup          [done]        (mini)
-  ►  Task 2: Auth System            [building...]  (5.4)
-  ○  Task 3: API Routes             [pending]      (mini)
+  ✓  Phase 1: Project Setup          [done]        (mini)
+  ►  Phase 2: Auth System            [building...]  (5.4)
+  ○  Phase 3: API Routes             [pending]      (mini)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -158,13 +158,13 @@ Status symbols:
 - `✗` — failed
 - `○` — pending
 
-If a builder subagent fails, log it as failed and continue with the next task.
+If a builder subagent fails, log it as failed and continue with the next phase.
 
 ---
 
-## Step 5: Opus Review
+## Step 5: Review
 
-After all tasks complete, print:
+After all phases complete, print:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -206,7 +206,7 @@ If there are blocking findings:
    spawn_agent(
      agent_type: "worker",
      model: "gpt-5.4-mini",
-     message: "You are applying review fixes (not implementing a new task).
+     message: "You are applying review fixes (not implementing a new phase).
 
        Review findings to fix:
        [paste blocking findings from .ralph-teams/REVIEW.md]
@@ -228,8 +228,8 @@ Final summary format:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   RALPH-TEAMS  Plan #[N] — Build complete!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ✓  Task 1: ...
-  ✓  Task 2: ...
+  ✓  Phase 1: ...
+  ✓  Phase 2: ...
   ✓  Review: [passed | N fixes applied]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```

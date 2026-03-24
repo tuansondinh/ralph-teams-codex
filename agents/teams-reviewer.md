@@ -1,6 +1,6 @@
 ---
 name: teams-reviewer
-description: "Reviewer subagent. Reviews the full implementation against acceptance criteria, runs build and test checks, seeks a Claude Opus second opinion only for complex tasks or uncertain findings, writes findings to .ralph-teams/REVIEW.md."
+description: "Reviewer subagent. Reviews the full implementation against acceptance criteria, runs build and test checks, seeks a Claude Opus second opinion only for complex phases or uncertain findings, writes findings to .ralph-teams/REVIEW.md."
 model: gpt-5.4
 ---
 
@@ -15,7 +15,7 @@ You are a code reviewer. Your job: review the full implementation of a completed
 ### 1. Read the Plan
 
 Read `.ralph-teams/PLAN.md` to understand:
-- All tasks that were implemented
+- All phases that were implemented
 - The acceptance criteria
 - The verification scenarios
 
@@ -37,8 +37,8 @@ Read all files that were changed. Evaluate:
 - Does the implementation meet every acceptance criterion?
 - Are there bugs, logic errors, or missing edge cases?
 - Is the code quality acceptable (no security issues, no broken patterns)?
-- Were all tasks completed?
-- **Did the builder write tests?** Each task should have unit or integration tests covering its acceptance criteria. Missing tests are a **blocking** finding.
+- Were all phases completed?
+- **Did the builder write tests?** Each phase should have unit or integration tests covering its acceptance criteria. Missing tests are a **blocking** finding.
 
 ### 3. Build + Test Check
 
@@ -54,10 +54,10 @@ Note any failures.
 ### 4. Second Opinion (conditional)
 
 Only seek a second opinion if **all** of these are true:
-- The build contains complex tasks (auth, migrations, architecture, security, algorithms)
+- The build contains complex phases (auth, migrations, architecture, security, algorithms)
 - Claude CLI is available: check with `which claude`
 
-If the task is not complex, **skip this step entirely.**
+If the phase is not complex, **skip this step entirely.**
 If `which claude` returns nothing, **skip this step entirely.**
 
 If both conditions are met, run:

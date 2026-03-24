@@ -1,12 +1,12 @@
 ---
 name: teams-run
-description: "Resume building a single Teams plan. Orchestrate sequential builder subagents for incomplete tasks, then run a reviewer and apply fixes."
+description: "Resume building a single Teams plan. Orchestrate sequential builder subagents for incomplete phases, then run a reviewer and apply fixes."
 user-invocable: true
 ---
 
 # Teams: Run (Resume Build)
 
-You are the orchestrator. Resume an existing build by running all incomplete tasks, then reviewing and applying fixes.
+You are the orchestrator. Resume an existing build by running all incomplete phases, then reviewing and applying fixes.
 
 ---
 
@@ -17,7 +17,7 @@ Read `.ralph-teams/PLAN.md`. If not found:
 
 Identify:
 - Plan ID (the `Plan ID:` field — e.g. `#2`)
-- All tasks, their status (`[x]` = done, `[!]` = failed, `[ ]` = incomplete), and their complexity annotation (`complexity: simple` or `complexity: complex`)
+- All phases, their status (`[x]` = done, `[!]` = failed, `[ ]` = incomplete), and their complexity annotation (`complexity: simple` or `complexity: standard`)
 - Platform (web or mobile)
 - Verification scenarios
 
@@ -25,12 +25,12 @@ Print the current state:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  RALPH-TEAMS  Plan #[N] — Resuming — [N of M tasks already done]
+  RALPH-TEAMS  Plan #[N] — Resuming — [N of M phases already done]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ✓  Task 1: Project Setup          [done]
-  ✓  Task 2: Auth System            [done]
-  ○  Task 3: API Routes             [pending]
-  ○  Task 4: Frontend               [pending]
+  ✓  Phase 1: Project Setup          [done]
+  ✓  Phase 2: Auth System            [done]
+  ○  Phase 3: API Routes             [pending]
+  ○  Phase 4: Frontend               [pending]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -44,38 +44,38 @@ git rev-parse HEAD
 ```
 Save this as `BASE_SHA`.
 
-For **each incomplete task** (`[ ]` or `[!]`) **in order**, use `spawn_agent`. Pick the model from the task's complexity annotation:
+For **each incomplete phase** (`[ ]` or `[!]`) **in order**, use `spawn_agent`. Pick the model from the phase's complexity annotation:
 - `complexity: simple` → `model: "gpt-5.4-mini"`
 - `complexity: standard` → `model: "gpt-5.4"`
 
 ```
 spawn_agent(
   agent_type: "worker",
-  model: "[gpt-5.4-mini | gpt-5.4 based on task complexity]",
-  message: "You are implementing Task [N] of [M]: [task description].
+  model: "[gpt-5.4-mini | gpt-5.4 based on phase complexity]",
+  message: "You are implementing Phase [N] of [M]: [phase description].
 
-    Subtasks to complete:
-    [list subtasks from the task]
+    Tasks to complete:
+    [list tasks from the phase]
 
     Platform: [web|mobile]
 
     Full plan:
     [paste .ralph-teams/PLAN.md content]
 
-    Your task: implement Task [N] only, completing all its subtasks. Verify it works using [Playwright|Maestro], then commit.
+    Your assignment: implement Phase [N] only, completing all its tasks. Verify it works using [Playwright|Maestro], then commit.
     If [Playwright|Maestro] tools are not available, run tests/lint instead and note that E2E verification was skipped."
 )
 ```
 
-Wait for each subagent with `wait_agent` before starting the next. As soon as you have recorded the result, call `close_agent` for that finished builder. After each task, update `.ralph-teams/PLAN.md` (change `[ ]` to `[x]` on success, `[!]` on failure) and reprint the task board.
+Wait for each subagent with `wait_agent` before starting the next. As soon as you have recorded the result, call `close_agent` for that finished builder. After each phase, update `.ralph-teams/PLAN.md` (change `[ ]` to `[x]` on success, `[!]` on failure) and reprint the phase board.
 
 If a builder subagent fails, log it as failed and continue.
 
 ---
 
-## Step 3: Opus Review
+## Step 3: Review
 
-After all tasks complete, print:
+After all phases complete, print:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -115,7 +115,7 @@ Read `.ralph-teams/REVIEW.md`. If there are blocking findings:
    spawn_agent(
      agent_type: "worker",
      model: "gpt-5.4-mini",
-     message: "You are applying review fixes (not implementing a new task).
+     message: "You are applying review fixes (not implementing a new phase).
 
        Review findings to fix:
        [paste blocking findings from .ralph-teams/REVIEW.md]
@@ -145,8 +145,8 @@ Final summary:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   RALPH-TEAMS  Plan #[N] — Build complete!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ✓  Task 1: ...
-  ✓  Task 2: ...
+  ✓  Phase 1: ...
+  ✓  Phase 2: ...
   ✓  Review: [passed | N fixes applied]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```

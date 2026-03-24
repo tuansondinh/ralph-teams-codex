@@ -1,6 +1,6 @@
 # ralph-teams-codex
 
-A Codex skill pack for planning and building features with sequential builder subagents (gpt-5.4-mini or gpt-5.4 based on task complexity). Each task is broken into subtasks the builder works through in one session — automated E2E verification, a review pass, and integrated debug and documentation skills.
+A Codex skill pack for planning and building features with sequential builder subagents (gpt-5.4-mini or gpt-5.4 based on phase complexity). Each phase is broken into tasks the builder works through in one session — automated E2E verification, a review pass, and integrated debug and documentation skills.
 
 ## Does Codex Support Plugins?
 
@@ -19,7 +19,7 @@ This repo packages the original workflow in that Codex-native form.
 teams-plan
 ```
 
-Describe what you want to build. Codex handles planning, sequential task execution, review, and verification.
+Describe what you want to build. Codex handles planning, sequential phase execution, review, and verification.
 
 ## Install
 
@@ -79,19 +79,19 @@ flowchart TD
     P1 --> P
     P --> CX1
 
-    P2["teams-run - Build each task sequentially"]:::cmd
+    P2["teams-run - Build each phase sequentially"]:::cmd
 
     CX1 -->|"approved"| P2
 
     subgraph Build[" "]
         direction TB
-        B1["mini/5.4 Builder - Task 1"]:::agent
-        B2["mini/5.4 Builder - Task 2"]:::agent
-        BN["mini/5.4 Builder - Task N"]:::agent
+        B1["mini/5.4 Builder - Phase 1"]:::agent
+        B2["mini/5.4 Builder - Phase 2"]:::agent
+        BN["mini/5.4 Builder - Phase N"]:::agent
         B1 --> B2 --> BN
     end
 
-    P2 -->|"one fresh agent per task"| Build
+    P2 -->|"one fresh agent per phase"| Build
 
     R["Reviewer Agent - Reviews all changes"]:::agent
     CX2["Codex second opinion on review (optional)"]:::optional
@@ -111,13 +111,13 @@ flowchart TD
     P3 --> DBG
 ```
 
-Each task runs in its own isolated subagent with a clean 200k token context window. Tasks are meaningful feature areas broken into subtasks — the builder completes all subtasks within one session. Results are committed after each task so you can always resume with `teams-run`.
+Each phase runs in its own isolated subagent with a clean 200k token context window. Phases are meaningful feature areas (targeting 50–60% context fill) broken into tasks — the builder completes all tasks within one session. Results are committed after each phase so you can always resume with `teams-run`.
 
 ## Skills
 
 | Skill | Description |
 |-------|-------------|
-| `teams-plan` | Discuss, plan, optionally review the plan, execute tasks sequentially, review, then apply fixes if needed |
+| `teams-plan` | Discuss, plan, optionally review the plan, execute phases sequentially, review, then apply fixes if needed |
 | `teams-run` | Resume an existing plan from where it left off |
 | `teams-verify` | Walk through manual E2E verification scenario by scenario |
 | `teams-debug` | Fix a bug in relation to the active plan — usable anytime |
@@ -127,16 +127,16 @@ Each task runs in its own isolated subagent with a clean 200k token context wind
 
 ```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  RALPH-TEAMS  Plan #3 — 2 of 4 tasks complete
+  RALPH-TEAMS  Plan #3 — 2 of 4 phases complete
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ✓  Task 1: Project Setup          [done]        (mini)
-  ✓  Task 2: Auth System            [done]        (5.4)
-  ►  Task 3: API Routes             [building...]  (5.4)
-  ○  Task 4: Frontend               [pending]      (mini)
+  ✓  Phase 1: Project Setup          [done]        (mini)
+  ✓  Phase 2: Auth System            [done]        (5.4)
+  ►  Phase 3: API Routes             [building...]  (5.4)
+  ○  Phase 4: Frontend               [pending]      (mini)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-Status symbols: `✓` done · `►` building · `✗` failed · `○` pending · `(mini)` simple task · `(5.4)` standard task
+Status symbols: `✓` done · `►` building · `✗` failed · `○` pending · `(mini)` simple phase · `(5.4)` standard phase
 
 ## Output Files
 
@@ -144,6 +144,6 @@ All build artifacts are written to `./.ralph-teams/` in your project:
 
 | File | Contents |
 |------|----------|
-| `.ralph-teams/PLAN.md` | Plan ID, tasks with complexity, acceptance criteria, verification scenarios |
+| `.ralph-teams/PLAN.md` | Plan ID, phases with complexity, acceptance criteria, verification scenarios |
 | `.ralph-teams/REVIEW.md` | Reviewer findings |
 | `.ralph-teams/VERIFY.md` | Manual verification results |
