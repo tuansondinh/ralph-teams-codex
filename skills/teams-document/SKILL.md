@@ -1,6 +1,6 @@
 ---
 name: teams-document
-description: "Update existing project docs (README.md, ARCHITECTURE.md, etc.) to reflect the latest Teams plan. Spawns a lightweight scribe agent to find and update relevant documentation files."
+description: "Update existing project docs (README.md, ARCHITECTURE.md, etc.) and the active plan file to reflect the latest build. Spawns a lightweight scribe agent to find and update relevant documentation files and ensure the plan is accurate."
 user-invocable: true
 ---
 
@@ -31,6 +31,7 @@ Show the user what will be updated:
   RALPH-TEAMS  Plan #[N] — [Feature Name]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Scribe will scan for and update:
+  • .ralph-teams/PLAN.md (verify phase statuses + overall status)
   • README.md
   • ARCHITECTURE.md
   • docs/**
@@ -56,18 +57,22 @@ spawn_agent(
     Plan ID: #[N]
     Feature: [feature name]
 
-    Tasks completed:
-    [paste task list from .ralph-teams/PLAN.md]
+    Phases completed:
+    [paste phase list from .ralph-teams/PLAN.md]
 
     Acceptance criteria:
     [paste acceptance criteria from .ralph-teams/PLAN.md]
 
     Instructions:
-    1. Find all existing documentation files: README.md, ARCHITECTURE.md, docs/**, CHANGELOG.md, or any other .md files that describe the project.
-    2. For each relevant file, update only the sections affected by the completed tasks — do not rewrite unrelated content.
-    3. Keep changes minimal and accurate. Only document what was actually built.
-    4. Do NOT create new documentation files unless one is completely missing and clearly expected (e.g., no README.md at all).
-    5. After updating, commit all documentation changes with message: 'docs: update docs for Plan #[N] — [feature name]'
+    1. Update `.ralph-teams/PLAN.md` first:
+       - Run `git log --oneline` to verify which phases were actually committed.
+       - Ensure each phase checkbox matches reality: `[x]` if committed, `[!]` if it failed, `[ ]` if not started.
+       - Update the top-level `Status:` field to reflect the current state (e.g., `complete`, `in-progress`).
+    2. Find all existing documentation files: README.md, ARCHITECTURE.md, docs/**, CHANGELOG.md, or any other .md files that describe the project.
+    3. For each relevant file, update only the sections affected by the completed phases — do not rewrite unrelated content.
+    4. Keep changes minimal and accurate. Only document what was actually built.
+    5. Do NOT create new documentation files unless one is completely missing and clearly expected (e.g., no README.md at all).
+    6. After updating, commit all changes with message: 'docs: update docs for Plan #[N] — [feature name]'
 
     What to update (examples):
     - README: feature descriptions, usage instructions, setup steps
