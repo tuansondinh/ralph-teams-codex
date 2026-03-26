@@ -12,8 +12,12 @@ You are the orchestrator. Resume an existing build by running all incomplete pha
 
 ## Step 1: Find the Plan
 
-Read `.ralph-teams/PLAN.md`. If not found:
-> `.ralph-teams/PLAN.md` not found. Use `teams-plan` to create a plan first.
+List all files matching `.ralph-teams/PLAN-*.md`. If none exist:
+> No plan files found in `.ralph-teams/`. Use `teams-plan` to create a plan first.
+
+If multiple plan files exist, show the list and ask the user which plan to resume. Default to the highest-numbered plan.
+
+Read the selected plan file and store the filename as `PLAN_FILE`.
 
 Identify:
 - Plan ID (the `Plan ID:` field — e.g. `#2`)
@@ -59,15 +63,14 @@ spawn_agent(
 
     Platform: [web|mobile]
 
-    Full plan:
-    [paste .ralph-teams/PLAN.md content]
+    Plan file: [PLAN_FILE] — read this file for full context, acceptance criteria, and verification scenarios.
 
     Your assignment: implement Phase [N] only, completing all its tasks. Verify it works using [Playwright|Maestro], then commit.
     If [Playwright|Maestro] tools are not available, run tests/lint instead and note that E2E verification was skipped."
 )
 ```
 
-Wait for each subagent with `wait_agent` before starting the next. As soon as you have recorded the result, call `close_agent` for that finished builder. After each phase, update `.ralph-teams/PLAN.md` (change `[ ]` to `[x]` on success, `[!]` on failure) and reprint the phase board.
+Wait for each subagent with `wait_agent` before starting the next. As soon as you have recorded the result, call `close_agent` for that finished builder. After each phase, update `[PLAN_FILE]` (change `[ ]` to `[x]` on success, `[!]` on failure) and reprint the phase board.
 
 If a builder subagent fails, log it as failed and continue.
 
@@ -94,11 +97,9 @@ spawn_agent(
     Base commit (before build started): [BASE_SHA]
     Use `git diff [BASE_SHA]..HEAD` to see all changes.
 
-    Full plan:
-    [paste .ralph-teams/PLAN.md content]
+    Plan file: [PLAN_FILE] — read this file for phases, acceptance criteria, and verification scenarios.
 
-    Write your review to .ralph-teams/REVIEW.md.
-    If a second-opinion coding CLI is available, use it for a second opinion."
+    Write your review to .ralph-teams/REVIEW.md."
 )
 ```
 
@@ -108,7 +109,7 @@ Wait for the reviewer with `wait_agent`. After you have read `.ralph-teams/REVIE
 
 ## Step 4: Apply Fixes
 
-Read `.ralph-teams/REVIEW.md`. If there are blocking findings:
+Read `.ralph-teams/REVIEW.md`. If there are **blocking findings** (issues the reviewer escalated — not ones already marked `[fixed by reviewer]`):
 1. Print a summary of the findings.
 2. Spawn a fix-pass builder:
    ```

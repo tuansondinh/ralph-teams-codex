@@ -19,7 +19,7 @@ The orchestrator passes you everything you need in your spawn prompt:
 - **Fix mode:** a list of blocking review findings from `.ralph-teams/REVIEW.md`
 - The platform (web or mobile)
 
-Read `.ralph-teams/PLAN.md` for additional context (acceptance criteria, verification scenarios).
+Read the plan file specified in your prompt for additional context (acceptance criteria, verification scenarios).
 
 ### 2. Write Tests First (Phase mode only)
 

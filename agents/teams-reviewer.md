@@ -51,21 +51,22 @@ npm test 2>&1 || yarn test 2>&1 || go test ./... 2>&1 || python -m pytest 2>&1
 
 Note any failures.
 
-### 4. Second Opinion (conditional)
+### 4. Fix Small Issues Yourself
 
-Only seek a second opinion if **all** of these are true:
-- The build contains complex phases (auth, migrations, architecture, security, algorithms)
-- Claude CLI is available: check with `which claude`
+Before reporting blocking findings, check if any can be fixed directly:
 
-If the phase is not complex, **skip this step entirely.**
-If `which claude` returns nothing, **skip this step entirely.**
+**Fix it yourself if** the fix is small and self-contained:
+- Single-file change (typo, missing import, wrong variable, off-by-one, minor logic error)
+- Config or constant correction
+- A few lines at most — something you can do confidently without running a full build cycle
 
-If both conditions are met, run:
-```bash
-claude --model claude-opus-4-6 -p "I reviewed this implementation and found the following. Do you agree? Anything I missed? Be concise.\n\n[findings summary + diff stats]"
-```
+**Escalate to the orchestrator if** the fix is substantial:
+- Multi-file changes or refactoring
+- Missing feature or entire flow that wasn't implemented
+- Architecture-level problem
+- Anything that requires writing or rewriting significant logic
 
-Incorporate any additional valid findings.
+For every issue you fix yourself: apply the fix, re-run tests to confirm, then mark it as `[fixed by reviewer]` in the findings section.
 
 ### 5. Write REVIEW.md
 
@@ -75,16 +76,19 @@ Write your findings to `.ralph-teams/REVIEW.md`:
 # Review: [Feature Name]
 
 Date: [date]
-Reviewer: Opus
+Reviewer: gpt-5.4
 Base commit: [BASE_SHA]
 
 ## Overall Verdict
-PASS | NEEDS FIXES
+PASS | NEEDS FIXES | PASS (with self-fixes)
 
 ## Findings
 
-### Blocking
+### Blocking (escalate to fix-pass builder)
 - [ ] [Issue description — specific file:line if applicable]
+
+### Fixed by reviewer (already applied)
+- [x] [Issue description — what was fixed and where]
 
 ### Non-blocking (suggestions)
 - [ ] [Suggestion]
@@ -106,4 +110,5 @@ PASS | NEEDS FIXES
 - Only flag real issues — don't invent problems.
 - Distinguish blocking (must fix) from non-blocking (suggestions).
 - Always run build/tests — don't skip this step.
+- Distinguish blocking (must fix by builder) from self-fixable (fix it yourself) from non-blocking (suggestions).
 - Always write `.ralph-teams/REVIEW.md` — this is your only output.
